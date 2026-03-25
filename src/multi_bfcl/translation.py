@@ -60,4 +60,4 @@ def translate_example(
         response_format=TranslationOutput,
     )
     new_example.question[0][0]["content"] = generated_example.new_instruction
-    return example
+    return new_example
