@@ -5,6 +5,7 @@ from pathlib import Path
 from urllib.request import urlopen
 
 from huggingface_hub import DatasetInfo, HfApi
+from tqdm.auto import tqdm
 
 from .data_models import Example
 from .languages import Language, get_all_languages
@@ -16,8 +17,7 @@ def load_bfcl() -> list[Example]:
     Returns:
         A list of examples.
     """
-    examples: list = []
-    for subset_name in [
+    all_v2_subsets = [
         "live_multiple",
         "live_parallel_multiple",
         "live_parallel",
@@ -28,14 +28,18 @@ def load_bfcl() -> list[Example]:
         "simple_java",
         "simple_javascript",
         "simple_python",
-    ]:
+    ]
+
+    examples: list = []
+    for subset_name in tqdm(
+        iterable=all_v2_subsets, desc="Loading BFCL-v2 dataset", unit="subset"
+    ):
         url_prefix = (
             "https://raw.githubusercontent.com/ShishirPatil/gorilla"
             "/refs/heads/main/berkeley-function-call-leaderboard/bfcl_eval/data"
         )
         input_url = f"{url_prefix}/BFCL_v4_{subset_name}.json"
         ground_truth_url = f"{url_prefix}/possible_answer/BFCL_v4_{subset_name}.json"
-        print(f"Loading dataset '{subset_name}'")
         inputs = _load_jsonl_from_url(input_url)
         ground_truth = _load_jsonl_from_url(ground_truth_url)
 

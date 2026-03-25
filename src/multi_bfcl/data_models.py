@@ -8,7 +8,7 @@ class FunctionParameters(BaseModel):
 
     type: str
     required: list[str]
-    properties: dict[str, dict[str, str | list[str]]]
+    properties: dict[str, dict]
 
 
 class FunctionDescription(BaseModel):
