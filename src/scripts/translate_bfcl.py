@@ -100,7 +100,7 @@ def main(model: str) -> None:
                 )
             except Exception as e:
                 warnings.warn(
-                    f"Failed to translate example {example.key} to {language.name}. "
+                    f"Failed to translate example {example.id} to {language.name}. "
                     f"Skipping. Here are the errors that occurred:\n{e}"
                 )
                 continue
