@@ -27,6 +27,20 @@ class Example(BaseModel):
     function: list[FunctionDescription]
     ground_truth: list[dict[str, dict]]
 
+    def __eq__(self, other: object) -> bool:
+        """Check if two examples are equal.
+
+        Args:
+            other:
+                The other example.
+
+        Returns:
+            True if the two examples are equal, False otherwise.
+        """
+        if not isinstance(other, Example):
+            return False
+        return self.id == other.id
+
 
 class TranslationOutput(BaseModel):
     """The output of the translation."""

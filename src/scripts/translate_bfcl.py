@@ -5,6 +5,7 @@ Usage:
 """
 
 import warnings
+from copy import deepcopy
 from pathlib import Path
 from string import punctuation
 
@@ -14,6 +15,7 @@ from dotenv import load_dotenv
 from tqdm.auto import tqdm
 
 from multi_bfcl.data_loading import load_bfcl, load_languages
+from multi_bfcl.data_models import Example
 from multi_bfcl.languages import DANISH
 from multi_bfcl.translation import translate_example
 
@@ -25,7 +27,7 @@ load_dotenv()
     "--model",
     "-m",
     type=str,
-    default="gemini/gemini-3-flash-preview",
+    default="gemini/gemini-3.1-flash-lite-preview",
     help="The model to use for translation.",
 )
 @click.option(
@@ -51,9 +53,21 @@ def main(model: str, api_base: str) -> None:
         if language != DANISH:
             continue
 
+        language_examples = deepcopy(examples)
+
         language_output_path = output_dir / f"bfcl-{language.code}.jsonl"
         if language_output_path.exists():
-            continue
+            with language_output_path.open() as f:
+                existing_examples = [
+                    Example.model_validate_json(line)
+                    for line in f.readlines()
+                    if line.strip()
+                ]
+            language_examples = [
+                example
+                for example in language_examples
+                if example not in existing_examples
+            ]
 
         dataset = load_dataset(
             "alexandrainst/multi-wiki-qa",
@@ -63,9 +77,8 @@ def main(model: str, api_base: str) -> None:
         )
 
         for example in tqdm(
-            iterable=examples,
+            iterable=language_examples,
             desc=f"Translating examples to {language.name}",
-            total=len(examples),
             unit="example",
             leave=False,
         ):
