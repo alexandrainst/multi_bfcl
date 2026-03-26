@@ -11,6 +11,7 @@ T = t.TypeVar("T")
 def generate(
     prompt: str,
     model: str,
+    api_base: str | None,
     temperature: float,
     max_tokens: int,
     response_format: type[T] | None = None,
@@ -22,6 +23,8 @@ def generate(
             The prompt to generate a response to.
         model:
             The model to use for generation.
+        api_base:
+            The base URL for the API, or None if no custom inference API is used.
         temperature:
             The temperature to use for generation.
         max_tokens:
@@ -43,6 +46,7 @@ def generate(
     conversation = [dict(role="user", content=prompt)]
     response: ModelResponse = litellm.completion(  # pyrefly: ignore[not-callable]
         model=model,
+        api_base=api_base,
         messages=conversation,
         temperature=temperature,
         max_completion_tokens=max_tokens,

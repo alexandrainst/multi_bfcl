@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from tqdm.auto import tqdm
 
 from multi_bfcl.data_loading import load_bfcl, load_languages
+from multi_bfcl.languages import DANISH
 from multi_bfcl.translation import translate_example
 
 load_dotenv()
@@ -27,9 +28,16 @@ load_dotenv()
     default="gemini/gemini-3-flash-preview",
     help="The model to use for translation.",
 )
-def main(model: str) -> None:
+@click.option(
+    "--api-base",
+    type=str,
+    default=None,
+    help="The base URL of the API to use for translation.",
+)
+def main(model: str, api_base: str) -> None:
     """Translate the IFEval dataset to different languages."""
     disable_progress_bars()
+    warnings.filterwarnings("ignore", category=UserWarning)
 
     output_dir = Path("data")
     output_dir.mkdir(exist_ok=True)
@@ -39,6 +47,10 @@ def main(model: str) -> None:
     for language in tqdm(
         iterable=load_languages(), desc="Translating datasets", unit="dataset"
     ):
+        # TEMP
+        if language != DANISH:
+            continue
+
         language_output_path = output_dir / f"bfcl-{language.code}.jsonl"
         if language_output_path.exists():
             continue
@@ -97,6 +109,7 @@ def main(model: str) -> None:
                     language=language,
                     language_example=example_text,
                     model=model,
+                    api_base=api_base,
                 )
             except Exception as e:
                 warnings.warn(
