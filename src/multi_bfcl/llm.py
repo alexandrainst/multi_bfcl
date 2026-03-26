@@ -13,7 +13,6 @@ def generate(
     model: str,
     api_base: str | None,
     temperature: float,
-    max_tokens: int,
     response_format: type[T] | None = None,
 ) -> str | T:
     """Generate a response to a prompt.
@@ -27,8 +26,6 @@ def generate(
             The base URL for the API, or None if no custom inference API is used.
         temperature:
             The temperature to use for generation.
-        max_tokens:
-            The maximum number of tokens to generate.
         response_format (optional):
             The model to use for generation. If None then the response is returned as a
             string. Defaults to None.
@@ -44,19 +41,19 @@ def generate(
             happening in the response format.
     """
     conversation = [dict(role="user", content=prompt)]
-    response: ModelResponse = litellm.completion(  # pyrefly: ignore[not-callable]
+
+    response = litellm.Router().completion(
         model=model if api_base is None else f"openai/{model}",
         api_base=api_base,
         messages=conversation,
         temperature=temperature,
-        max_completion_tokens=max_tokens,
         response_format=response_format,
+        timeout=600,
     )
-    choice = response.choices[0]
-    assert isinstance(choice, Choices), (
-        f"Expected a Choices object, but got {type(choice)}"
+    assert isinstance(response, ModelResponse), (
+        f"Expected a ModelResponse object, but got {type(response)}"
     )
-    completion = choice.message.content
+    completion = response.choices[0].message.content
     assert completion is not None, f"The model did not return a completion: {response}"
 
     error_msgs: list[str] = list()
@@ -79,7 +76,6 @@ def generate(
                     model=model,
                     messages=conversation,
                     temperature=temperature,
-                    max_tokens=max_tokens,
                     response_format=response_format,
                 )
                 choice = response.choices[0]

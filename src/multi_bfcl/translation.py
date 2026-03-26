@@ -64,7 +64,6 @@ def translate_example(
         model=model,
         api_base=api_base,
         temperature=0.0,
-        max_tokens=2048,
         response_format=TranslationOutput,
     )
     new_example.question[0][0]["content"] = generated_example.new_instruction
@@ -78,7 +77,6 @@ def translate_example(
             model=model,
             api_base=api_base,
             temperature=0.0,
-            max_tokens=2048,
             response_format=TranslationOutput,
         )
         new_example.question[0][1]["content"] = generated_example.new_instruction
