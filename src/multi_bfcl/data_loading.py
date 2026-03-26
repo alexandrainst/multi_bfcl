@@ -3,7 +3,7 @@
 import json
 from functools import cache
 from pathlib import Path
-from time import time
+from time import sleep
 from urllib.error import HTTPError
 from urllib.request import urlopen
 
@@ -103,6 +103,6 @@ def _load_jsonl_from_url(url: str) -> list:
         except HTTPError as e:
             if e.code == 429:
                 print("Rate limit exceeded. Waiting for 1 minute...")
-                time.sleep(60)
+                sleep(60)
             else:
                 raise e
