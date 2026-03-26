@@ -1,7 +1,7 @@
 """Translate the BFCL-v2 dataset to different languages.
 
 Usage:
-    uv run src/scripts/translate_bfcl.py [--model MODEL]
+    uv run src/scripts/translate_bfcl.py [--model MODEL] [--api-base API_BASE]
 """
 
 import warnings
