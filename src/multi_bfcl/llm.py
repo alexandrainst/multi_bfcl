@@ -45,7 +45,7 @@ def generate(
     """
     conversation = [dict(role="user", content=prompt)]
     response: ModelResponse = litellm.completion(  # pyrefly: ignore[not-callable]
-        model=model,
+        model=model if api_base is None else f"openai/{model}",
         api_base=api_base,
         messages=conversation,
         temperature=temperature,
