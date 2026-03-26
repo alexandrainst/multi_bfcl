@@ -42,7 +42,7 @@ def generate(
     """
     conversation = [dict(role="user", content=prompt)]
 
-    response = litellm.Router().completion(
+    response = litellm.completion(  # pyrefly: ignore[not-callable]
         model=model if api_base is None else f"openai/{model}",
         api_base=api_base,
         messages=conversation,
@@ -73,10 +73,12 @@ def generate(
                     ]
                 )
                 response = litellm.completion(  # pyrefly: ignore[not-callable]
-                    model=model,
+                    model=model if api_base is None else f"openai/{model}",
+                    api_base=api_base,
                     messages=conversation,
                     temperature=temperature,
                     response_format=response_format,
+                    timeout=600,
                 )
                 choice = response.choices[0]
                 assert isinstance(choice, Choices), (
