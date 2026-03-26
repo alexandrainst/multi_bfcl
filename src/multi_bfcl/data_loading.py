@@ -1,7 +1,10 @@
 """Loading of data to use in the project."""
 
 import json
+from functools import cache
 from pathlib import Path
+from time import time
+from urllib.error import HTTPError
 from urllib.request import urlopen
 
 from huggingface_hub import DatasetInfo, HfApi
@@ -76,6 +79,7 @@ def load_languages() -> list[Language]:
     return languages
 
 
+@cache
 def _load_jsonl_from_url(url: str) -> list:
     """Load jsonl from url.
 
@@ -84,9 +88,21 @@ def _load_jsonl_from_url(url: str) -> list:
 
     Returns:
         List of deserialized objects
+
+    Raises:
+        HTTPError:
+            If an error occurs while downloading the file.
     """
-    with urlopen(url) as r:
-        path = r.read().decode()
-        if isinstance(path, Path):
-            path = path.read_text()
-        return [json.loads(line) for line in path.splitlines()]
+    while True:
+        try:
+            with urlopen(url) as r:
+                path = r.read().decode()
+                if isinstance(path, Path):
+                    path = path.read_text()
+                return [json.loads(line) for line in path.splitlines()]
+        except HTTPError as e:
+            if e.code == 429:
+                print("Rate limit exceeded. Waiting for 1 minute...")
+                time.sleep(60)
+            else:
+                raise e
