@@ -37,7 +37,7 @@ load_dotenv()
     help="The base URL of the API to use for translation.",
 )
 def main(model: str, api_base: str) -> None:
-    """Translate the IFEval dataset to different languages."""
+    """Translate the BFCL-v2 dataset to different languages."""
     disable_progress_bars()
     warnings.filterwarnings("ignore", category=UserWarning)
 
