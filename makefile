@@ -98,10 +98,6 @@ publish-docs:  ## Publish documentation to GitHub Pages
 test:  ## Run tests
 	@uv run pytest && uv run readme-cov
 
-docker:  ## Build Docker image and run container
-	@docker build -t multi_bfcl .
-	@docker run -it --rm multi_bfcl
-
 tree:  ## Print directory tree
 	@tree -a --gitignore -I .git .
 

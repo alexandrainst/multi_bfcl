@@ -50,9 +50,6 @@ uv run src/scripts/translate_bfcl.py --model <model> [--api-base <url>]
 
 - **`make install` is interactive** (prompts for git name/email). Use
   `make install-non-interactive` in agents, CI, or scripts.
-- **The Dockerfile is broken as-is**: its `CMD` runs
-  `src/scripts/main.py`, which does not exist. `make docker` will fail until
-  that script is added.
 - **`make test` rewrites `README.md`** to update the coverage badge. Commit
   that README change alongside test changes.
 - **`load_bfcl()` downloads data from the network on every call**

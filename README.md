@@ -62,7 +62,6 @@ The project includes the following convenience commands:
   checking.
 - `make check`: Lint and format the code using `ruff`, and type check using `pyrefly`.
 - `make test`: Run tests using `pytest` and update the coverage badge in the readme.
-- `make docker`: Build a Docker image and run the Docker container.
 - `make docs`: View documentation locally in a browser.
 - `make publish-docs`: Publish documentation to GitHub Pages.
 - `make tree`: Show the project structure as a tree.
@@ -105,12 +104,6 @@ Note that this is also how we import functions/classes in tests, since each test
 file is also a Python script, rather than a module.
 
 ## Features
-
-### Docker Setup
-
-A Dockerfile is included in the new repositories, which by default runs
-`src/scripts/main.py`. You can build the Docker image and run the Docker container by
-running `make docker`.
 
 ### Automatic Documentation
 
