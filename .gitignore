@@ -87,7 +87,8 @@ target/
 outputs/
 multirun/
 
-# Data
+# Data
+data/*.jsonl
 data/raw/*
 !data/raw/.gitkeep
 data/processed/*
